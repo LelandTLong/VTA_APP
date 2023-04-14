@@ -32,6 +32,8 @@ db = mysql.connector.connect(
 
 mycursor = db.cursor()
 #TODO move this to a separate module
+#TODO fix trip_updates schema to match this
+#TODO add uncertainty field
 mycursor.execute("CREATE TABLE IF NOT EXISTS " + TRIPUPDATES_TABLE + " (id VARCHAR(255), timestamp INT, PRIMARY KEY (id))")
 mycursor.execute("CREATE TABLE IF NOT EXISTS " + STOPTIMEUPDATES_TABLE + " (id VARCHAR(255), stop_sequence INT, stop_id VARCHAR(255), schedule_relationship VARCHAR(255), PRIMARY KEY (id, stop_id))")
 mycursor.execute("CREATE TABLE IF NOT EXISTS " + DEPARTURES_TABLE + " (id VARCHAR(255), stop_id VARCHAR(255), time INT, PRIMARY KEY (id, stop_id))")
@@ -72,11 +74,13 @@ for update_set in data:
   val = (update_set["id"], trip_update["timestamp"])
   mycursor.execute(query,val)
 
+"""
 mycursor.execute("select * from " + TRIPUPDATES_TABLE)
 i = 0
 for x in mycursor:
   i = i + 1
 print(i)
+"""
 
 db.commit()
 db.close()
