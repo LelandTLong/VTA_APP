@@ -5,6 +5,8 @@ import db_util
 import requests
 import json
 
+#TODO add ARGs to handle clearing DB and parsing data options
+
 DATABASE_NAME = "vtadatabase"
 TRIPUPDATES_TABLE = "TripUpdates"
 STOPTIMEUPDATES_TABLE = "StopTimeUpdates"
@@ -68,7 +70,7 @@ for update_set in data:
         mycursor.execute(query,val)
 
   query = "INSERT IGNORE INTO tripupdates (id, timestamp) VALUES (%s, %s)"
-  val = (update_set["id"], update_set["tripUpdate"]["timestamp"])
+  val = (update_set["id"], trip_update["timestamp"])
   mycursor.execute(query,val)
   #mycursor.execute("INSERT INTO " + TRIPUPDATES_TABLE + " (id, timestamp) VALUES (" + update["id"] + "," + update["tripUpdate"]["timestamp"] + ")")
 
