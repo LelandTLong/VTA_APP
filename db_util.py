@@ -1,3 +1,47 @@
+import mysql.connector
+import keys
+
+DATABASE_NAME = "vtadatabase"
+TRIPUPDATES_TABLE = "TripUpdates"
+STOPTIMEUPDATES_TABLE = "StopTimeUpdates"
+DEPARTURES_TABLE = "Departures"
+ARRIVALS_TABLE = "Arrivals"
+
+#TODO add function headers
+
+def db_check():
+  dbCheck = mysql.connector.connect(
+    host="localhost",
+    user=keys.user,
+    password=keys.password,
+  )
+  cursor = dbCheck.cursor()
+  cursor.execute("CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME)
+  show_databases(cursor)
+
+def clear_data(cursor):
+  cursor.execute("DROP TABLE tripupdates")
+  cursor.execute("DROP TABLE stoptimeupdates")
+  cursor.execute("DROP TABLE departures")
+  cursor.execute("DROP TABLE arrivals")
+
+def create_tables(cursor):
+  cursor.execute("CREATE TABLE IF NOT EXISTS " + TRIPUPDATES_TABLE + " (id VARCHAR(255), timestamp INT, PRIMARY KEY (id))")
+  cursor.execute("CREATE TABLE IF NOT EXISTS " + STOPTIMEUPDATES_TABLE + " (id VARCHAR(255), stop_sequence INT, stop_id VARCHAR(255), schedule_relationship VARCHAR(255), PRIMARY KEY (id, stop_id))")
+  cursor.execute("CREATE TABLE IF NOT EXISTS " + DEPARTURES_TABLE + " (id VARCHAR(255), stop_id VARCHAR(255), time INT, PRIMARY KEY (id, stop_id))")
+  cursor.execute("CREATE TABLE IF NOT EXISTS " + ARRIVALS_TABLE + " (id VARCHAR(255), stop_id VARCHAR(255), time INT, PRIMARY KEY (id, stop_id))")
+  show_tables(cursor)
+
+def init_db():
+  db = mysql.connector.connect(
+    host="localhost",
+    user=keys.user,
+    password=keys.password,
+    database=DATABASE_NAME
+  )
+  mycursor = db.cursor()
+  return db, mycursor
+
 def show_tables(cursor):
   cursor.execute("SHOW TABLES")
   print("TABLES:")
