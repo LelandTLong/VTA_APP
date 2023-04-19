@@ -6,7 +6,9 @@ TRIPUPDATES_TABLE = "TripUpdates"
 STOPTIMEUPDATES_TABLE = "StopTimeUpdates"
 DEPARTURES_TABLE = "Departures"
 ARRIVALS_TABLE = "Arrivals"
-table_array = [TRIPUPDATES_TABLE, STOPTIMEUPDATES_TABLE, DEPARTURES_TABLE, ARRIVALS_TABLE]
+#TRIPS_TABLE = "Trips"
+#VEHICLES_TABLE = "Vehicles"
+#table_array = [TRIPUPDATES_TABLE, STOPTIMEUPDATES_TABLE, DEPARTURES_TABLE, ARRIVALS_TABLE, TRIPS_TABLE, VEHICLE_TABLE]
 
 #TODO add function headers
 #TODO add array for all tables to add and drop
@@ -28,10 +30,12 @@ def clear_data(cursor):
   cursor.execute("DROP TABLE arrivals")
 
 def create_tables(cursor):
-  cursor.execute("CREATE TABLE IF NOT EXISTS " + TRIPUPDATES_TABLE + " (id VARCHAR(255), timestamp INT, PRIMARY KEY (id))")
+  cursor.execute("CREATE TABLE IF NOT EXISTS " + TRIPUPDATES_TABLE + " (id VARCHAR(255), timestamp INT, trip_id VARCHAR(255), route_id VARCHAR(255), start_date VARCHAR(255), schedule_relationship VARCHAR(255), vehicle_id VARCHAR(255), PRIMARY KEY (id))")
   cursor.execute("CREATE TABLE IF NOT EXISTS " + STOPTIMEUPDATES_TABLE + " (id VARCHAR(255), stop_sequence INT, stop_id VARCHAR(255), schedule_relationship VARCHAR(255), PRIMARY KEY (id, stop_id))")
   cursor.execute("CREATE TABLE IF NOT EXISTS " + DEPARTURES_TABLE + " (id VARCHAR(255), stop_id VARCHAR(255), time INT, PRIMARY KEY (id, stop_id))")
   cursor.execute("CREATE TABLE IF NOT EXISTS " + ARRIVALS_TABLE + " (id VARCHAR(255), stop_id VARCHAR(255), time INT, PRIMARY KEY (id, stop_id))")
+  #cursor.execute("CREATE TABLE IF NOT EXISTS " + TRIPS_TABLE + " (id VARCHAR(255), trip_id VARCHAR(255), route_id VARCHAR(255), start_date VARCHAR(255), schedule_relationship VARCHAR(255), PRIMARY KEY (id))")
+  #cursor.execute("CREATE TABLE IF NOT EXISTS " + VEHICLES_TABLE + " (id VARCHAR(255), vehicle_id VARCHAR(255), label VARCHAR(255), PRIMARY KEY (id))")
   show_tables(cursor)
 
 def init_db():

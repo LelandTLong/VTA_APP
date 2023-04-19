@@ -11,4 +11,5 @@ install SQL\
 **STRY00000004**: Commandline features and improve features: add deleting outdated tripupdates\
 **STRY00000005**: Formalize unit testing\
 **STRY00000006**: Prepare project and README for submission\
-TODO add intentions and goals with certain DB and code designs
+TODO add intentions and goals with certain DB and code designs\
+TODO move code to src folder

@@ -56,12 +56,32 @@ for update_set in data:
         query = "INSERT IGNORE INTO arrivals (id, stop_id, time) VALUES (%s, %s, %s)"
         val = (update_set["id"], stop_update["stopId"], arrival['time'])
         mycursor.execute(query,val)
+  
+  #store the trip object
+  """
+  trip = trip_update['trip']
+  query = "INSERT IGNORE INTO trips (id, trip_id, route_id, start_date, schedule_relationship) VALUES (%s, %s, %s, %s, %s)"
+  val = (update_set["id"], trip["tripId"], trip["routeId"], trip["startDate"], trip["scheduleRelationship"])
+  mycursor.execute(query,val)
 
+  #store vehicle object - check since this isn't required
+  vehicle = trip_update['vehicle']
+  query = "INSERT IGNORE INTO vehicles (id, vehicle_id) VALUES (%s, %s, %s)"
+  val = (update_set["id"], trip["id"])
+  mycursor.execute(query,val)
+  """
   #check if there is an outdated entry of this tripupdate
   #query = "SELECT EXISTS(SELECT * FROM tripupdates where ("
 
-  query = "INSERT IGNORE INTO tripupdates (id, timestamp) VALUES (%s, %s)"
-  val = (update_set["id"], trip_update["timestamp"])
+  #store tripupdate object
+  query = "INSERT IGNORE INTO tripupdates (id, trip_id, route_id, start_date, schedule_relationship, vehicle_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+  trip = trip_update["trip"]
+  if 'vehicle' in trip_update:
+    vehicle = trip_update["vehicle"]
+    vehicle = vehicle["id"]
+  else:
+    vehicle = None
+  val = (update_set["id"], trip["tripId"], trip["routeId"], trip["startDate"], trip["scheduleRelationship"], vehicle, trip_update["timestamp"])
   mycursor.execute(query,val)
 
 print("Logged", count, "entries from the API call")
