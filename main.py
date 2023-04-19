@@ -5,7 +5,6 @@ import requests
 import json
 
 #TODO move src files to separate directory
-#TODO add ARGs to handle clearing DB and parsing data options
 parser = argparse.ArgumentParser(
   prog='VTA_APP'
 )
@@ -31,12 +30,12 @@ data = requests.get('https://api.goswift.ly/real-time/vta/gtfs-rt-trip-updates?a
 data = json.loads(data.text)
 data = data["entity"]
 
-#TODO add trip object for extra credit
 #for every tripupdate
 count = 0
 for update_set in data:
   count += 1
   trip_update = update_set['tripUpdate']
+  db_util.delete_dupes(trip_update)
 
   #for every stopTimeUpdate
   if 'stopTimeUpdate' in trip_update:
@@ -47,6 +46,7 @@ for update_set in data:
       arrival_uncertainty = '-1'
       depart_time = '-1'
       depart_uncertainty = '-1'
+      
       if 'arrival' in stop_update:
         arrival = stop_update["arrival"]
         if 'time' in arrival:
@@ -63,36 +63,6 @@ for update_set in data:
       query = "INSERT IGNORE INTO stoptimeupdates (id, stop_sequence, stop_id, schedule_relationship, arrival_uncertainty, arrival_time, departure_uncertainty, departure_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
       val = (update_set["id"], stop_update["stopSequence"], stop_update["stopId"], stop_update["scheduleRelationship"], arrival_uncertainty, arrival_time, depart_uncertainty, depart_time)
       mycursor.execute(query,val)
-
-      """
-      #if add departures and arrivals entity if they exist
-      if 'departure' in stop_update:
-        departure = stop_update['departure']
-        query = "INSERT IGNORE INTO departures (id, stop_id, time) VALUES (%s, %s, %s)"
-        val = (update_set["id"], stop_update["stopId"], departure['time'])
-        mycursor.execute(query,val)
-      if 'arrival' in stop_update:
-        arrival = stop_update['arrival']
-        query = "INSERT IGNORE INTO arrivals (id, stop_id, time) VALUES (%s, %s, %s)"
-        val = (update_set["id"], stop_update["stopId"], arrival['time'])
-        mycursor.execute(query,val)
-      """
-  
-  #store the trip object
-  """
-  trip = trip_update['trip']
-  query = "INSERT IGNORE INTO trips (id, trip_id, route_id, start_date, schedule_relationship) VALUES (%s, %s, %s, %s, %s)"
-  val = (update_set["id"], trip["tripId"], trip["routeId"], trip["startDate"], trip["scheduleRelationship"])
-  mycursor.execute(query,val)
-
-  #store vehicle object - check since this isn't required
-  vehicle = trip_update['vehicle']
-  query = "INSERT IGNORE INTO vehicles (id, vehicle_id) VALUES (%s, %s, %s)"
-  val = (update_set["id"], trip["id"])
-  mycursor.execute(query,val)
-  """
-  #check if there is an outdated entry of this tripupdate
-  #query = "SELECT EXISTS(SELECT * FROM tripupdates where ("
 
   #store tripupdate object
   query = "INSERT IGNORE INTO tripupdates (id, trip_id, route_id, start_date, schedule_relationship, vehicle_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
