@@ -37,14 +37,34 @@ count = 0
 for update_set in data:
   count += 1
   trip_update = update_set['tripUpdate']
+
   #for every stopTimeUpdate
   if 'stopTimeUpdate' in trip_update:
     stop_updates = trip_update['stopTimeUpdate']
     for stop_update in stop_updates:
-      query = "INSERT IGNORE INTO stoptimeupdates (id, stop_sequence, stop_id, schedule_relationship) VALUES (%s, %s, %s, %s)"
-      val = (update_set["id"], stop_update["stopSequence"], stop_update["stopId"], stop_update["scheduleRelationship"])
+      #check if arrivals and departures exists
+      arrival_time = None
+      arrival_uncertainty = None
+      depart_time = None
+      depart_uncertainty = None
+      if 'arrival' in stop_update:
+        arrival = stop_update["arrival"]
+        if 'time' in arrival:
+          arrival_time = arrival["time"]
+        if 'uncertainty' in arrival:
+          arrival_uncertainty = arrival["uncertainty"]
+      if 'departure' in stop_update:
+        departure = stop_update["departure"]
+        if 'time' in departure:
+          depart_time = departure["time"]
+        if 'uncertainty' in departure:
+          depart_uncertainty = departure["uncertainty"]
+        
+      query = "INSERT IGNORE INTO stoptimeupdates (id, stop_sequence, stop_id, schedule_relationship, arrival_uncertainty, arrival_time, departure_uncertainty, departure_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+      val = (update_set["id"], stop_update["stopSequence"], stop_update["stopId"], stop_update["scheduleRelationship"], arrival_uncertainty, arrival_time, depart_uncertainty, depart_time)
       mycursor.execute(query,val)
 
+      """
       #if add departures and arrivals entity if they exist
       if 'departure' in stop_update:
         departure = stop_update['departure']
@@ -56,6 +76,7 @@ for update_set in data:
         query = "INSERT IGNORE INTO arrivals (id, stop_id, time) VALUES (%s, %s, %s)"
         val = (update_set["id"], stop_update["stopId"], arrival['time'])
         mycursor.execute(query,val)
+      """
   
   #store the trip object
   """
