@@ -43,10 +43,10 @@ for update_set in data:
     stop_updates = trip_update['stopTimeUpdate']
     for stop_update in stop_updates:
       #check if arrivals and departures exists
-      arrival_time = None
-      arrival_uncertainty = None
-      depart_time = None
-      depart_uncertainty = None
+      arrival_time = '-1'
+      arrival_uncertainty = '-1'
+      depart_time = '-1'
+      depart_uncertainty = '-1'
       if 'arrival' in stop_update:
         arrival = stop_update["arrival"]
         if 'time' in arrival:
@@ -101,7 +101,7 @@ for update_set in data:
     vehicle = trip_update["vehicle"]
     vehicle = vehicle["id"]
   else:
-    vehicle = None
+    vehicle = 'null'
   val = (update_set["id"], trip["tripId"], trip["routeId"], trip["startDate"], trip["scheduleRelationship"], vehicle, trip_update["timestamp"])
   mycursor.execute(query,val)
 
