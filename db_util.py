@@ -59,4 +59,3 @@ def delete_dupes(new_update):
   query = "SELECT * FROM tripupdates as old WHERE (old.trip_id = %s AND old.timestamp < %s)"
   val = (new_update['tripId'], new_update['timestamp'])
   cursor.execute(query, val)
-

@@ -36,7 +36,6 @@ for update_set in data:
   count += 1
   trip_update = update_set['tripUpdate']
   db_util.delete_dupes(trip_update)
-
   #for every stopTimeUpdate
   if 'stopTimeUpdate' in trip_update:
     stop_updates = trip_update['stopTimeUpdate']
@@ -46,7 +45,7 @@ for update_set in data:
       arrival_uncertainty = '-1'
       depart_time = '-1'
       depart_uncertainty = '-1'
-      
+
       if 'arrival' in stop_update:
         arrival = stop_update["arrival"]
         if 'time' in arrival:
