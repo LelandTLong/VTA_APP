@@ -6,8 +6,10 @@ TRIPUPDATES_TABLE = "TripUpdates"
 STOPTIMEUPDATES_TABLE = "StopTimeUpdates"
 DEPARTURES_TABLE = "Departures"
 ARRIVALS_TABLE = "Arrivals"
+table_array = [TRIPUPDATES_TABLE, STOPTIMEUPDATES_TABLE, DEPARTURES_TABLE, ARRIVALS_TABLE]
 
 #TODO add function headers
+#TODO add array for all tables to add and drop
 
 def db_check():
   dbCheck = mysql.connector.connect(
@@ -53,3 +55,10 @@ def show_databases(cursor):
   print("DATABASES:")
   for database in cursor:
     print(database)
+
+def count_trip_updates(cursor):
+  i = 0
+  cursor.execute("SELECT * FROM tripupdates")
+  for entry in cursor:
+    i += 1
+  print("The number of trip updates in the DB is", i)

@@ -4,11 +4,26 @@ import db_util
 import requests
 import json
 
+#TODO move src files to separate directory
 #TODO add ARGs to handle clearing DB and parsing data options
+parser = argparse.ArgumentParser(
+  prog='VTA_APP'
+)
+parser.add_argument(
+  '--clear-data', 
+  dest='clear_data', 
+  action='store_true', 
+  required=False, 
+  default=False,
+  help='Clear existing DB data before running application'
+)
+args = parser.parse_args()
+
 db_util.db_check()
 db, mycursor = db_util.init_db()
-
-#TODO fix trip_updates schema to match this
+if args.clear_data == True:
+  print('wiping the DB')
+  db_util.clear_data(mycursor)
 db_util.create_tables(mycursor)
 
 #TODO add error handling for API call
@@ -16,7 +31,7 @@ data = requests.get('https://api.goswift.ly/real-time/vta/gtfs-rt-trip-updates?a
 data = json.loads(data.text)
 data = data["entity"]
 
-#TODO clean up this loop
+#TODO add trip object for extra credit
 #for every tripupdate
 count = 0
 for update_set in data:
@@ -41,10 +56,15 @@ for update_set in data:
         query = "INSERT IGNORE INTO arrivals (id, stop_id, time) VALUES (%s, %s, %s)"
         val = (update_set["id"], stop_update["stopId"], arrival['time'])
         mycursor.execute(query,val)
+
+  #check if there is an outdated entry of this tripupdate
+  #query = "SELECT EXISTS(SELECT * FROM tripupdates where ("
+
   query = "INSERT IGNORE INTO tripupdates (id, timestamp) VALUES (%s, %s)"
   val = (update_set["id"], trip_update["timestamp"])
   mycursor.execute(query,val)
 
-print("Logged", count, "entries")
+print("Logged", count, "entries from the API call")
+db_util.count_trip_updates(mycursor)
 db.commit()
 db.close()
