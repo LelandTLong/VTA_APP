@@ -5,8 +5,8 @@
 `pip install {module}`\
 or\
 `python -m pip install {module}`
-3. create key.py file in root directory by copying the format of the keys_template.py file\
-user and password is for mysql DB credentials, API key is the one provided for the project
+3. create a `keys.py` file in the project root directory by copying the format of the keys_template.py file\
+user and password is for mysql DB credentials, API key is the one provided for the project.
 4. install MySQL web-community version with default setup: 'https://dev.mysql.com/downloads/installer/'.
 5. start MySQL server
 6. Run app: `python main.py --help` for all options\
