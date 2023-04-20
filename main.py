@@ -4,7 +4,7 @@ import db_util
 import requests
 import json
 
-#TODO move src files to separate directory
+#set up commandline flags
 parser = argparse.ArgumentParser(
   prog='VTA_APP'
 )
@@ -28,6 +28,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+#init db
 db_util.db_check()
 db, mycursor = db_util.init_db()
 if args.clear_data == True:
@@ -35,7 +36,7 @@ if args.clear_data == True:
   db_util.clear_data(mycursor)
 db_util.create_tables(mycursor)
 
-#TODO add error handling for API call
+#call the API for data
 data = requests.get('https://api.goswift.ly/real-time/vta/gtfs-rt-trip-updates?apiKey=' + keys.API_key + '&format=json')
 data = json.loads(data.text)
 data = data["entity"]
@@ -51,12 +52,12 @@ for update_set in data:
   if 'stopTimeUpdate' in trip_update:
     stop_updates = trip_update['stopTimeUpdate']
     for stop_update in stop_updates:
-      #check if arrivals and departures exists
       arrival_time = '-1'
       arrival_uncertainty = '-1'
       depart_time = '-1'
       depart_uncertainty = '-1'
 
+      #check if arrivals and departures exists
       if 'arrival' in stop_update:
         arrival = stop_update["arrival"]
         if 'time' in arrival:
