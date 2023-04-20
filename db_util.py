@@ -5,8 +5,6 @@ DATABASE_NAME = "vtadatabase"
 TRIPUPDATES_TABLE = "TripUpdates"
 STOPTIMEUPDATES_TABLE = "StopTimeUpdates"
 
-#TODO add function headers
-
 def db_check():
   dbCheck = mysql.connector.connect(
     host="localhost",
@@ -55,7 +53,10 @@ def count_trip_updates(cursor):
     i += 1
   print("The number of trip updates in the DB is", i)
 
-def delete_dupes(new_update):
-  query = "SELECT * FROM tripupdates as old WHERE (old.trip_id = %s AND old.timestamp < %s)"
-  val = (new_update['tripId'], new_update['timestamp'])
+def delete_old(new_update, cursor):
+  query = "DELETE FROM stopTimeupdates WHERE 'id' in (SELECT 'id' FROM tripupdates as old WHERE (old.trip_id = %s AND old.timestamp < %s))"
+  val = (new_update['trip']['tripId'], new_update['timestamp'])
+  cursor.execute(query, val)
+  
+  query = "DELETE FROM tripupdates as old WHERE (old.trip_id = %s AND old.timestamp < %s)"
   cursor.execute(query, val)

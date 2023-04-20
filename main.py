@@ -9,12 +9,22 @@ parser = argparse.ArgumentParser(
   prog='VTA_APP'
 )
 parser.add_argument(
-  '--clear-data', 
+  '--clear-data',
+  '-c',
   dest='clear_data', 
   action='store_true', 
   required=False, 
   default=False,
   help='Clear existing DB data before running application'
+)
+parser.add_argument(
+  '--delete-outdated',
+  '-d',
+  dest='delete_outdated', 
+  action='store_true', 
+  required=False, 
+  default=False,
+  help='EC function, remove outdated TripUpdates'
 )
 args = parser.parse_args()
 
@@ -35,7 +45,8 @@ count = 0
 for update_set in data:
   count += 1
   trip_update = update_set['tripUpdate']
-  db_util.delete_dupes(trip_update)
+  if args.delete_outdated == True:
+    db_util.delete_old(trip_update, mycursor)
   #for every stopTimeUpdate
   if 'stopTimeUpdate' in trip_update:
     stop_updates = trip_update['stopTimeUpdate']
