@@ -18,11 +18,11 @@ The app will create a DB called 'VTADatabase' and its tables automatically when 
 
 ## Functionality:
 All base functionality for project guidelines is complete\
-EC done: ignore existing and append new tripupdates, delete outdated tripupdates\
+EC done: ignore existing and append new tripupdates, delete outdated tripupdates
 
 ## STRY Naming and Meaning
 **STRY00000001**: Create base template\
 **STRY00000002**: Parse API data and store into SQL DB\
 **STRY00000003**: Create Server\
 **STRY00000004**: Commandline features, cleaned DB design, and added deleting outdated tripupdates\
-**STRY00000005**: Added removing outdated TripUpdates option\
+**STRY00000005**: Added removing outdated TripUpdates option
